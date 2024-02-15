@@ -1,42 +1,28 @@
-import React,{useEffect,useState} from 'react';
-import axios from 'axios';
-import Gallery from './Gallery';
+import React,{useState} from 'react'
+import Products from './Products';
 
-const apiKey = "636e1481b4f3c446d26b8eb6ebfe7127";
 const App = () => {
+  const [search,setSearch] = useState('');
   const [data,setData] = useState([]);
-  const [search,setSearch] = useState("");
-  useEffect(()=>{
-    },[])
-  const changeHandler = e =>{
-    setSearch(e.target.value);
-  }
+  const YOUR_APP_ID = "8aecf864";
+  const YOUR_APP_KEY ="b460ca299374805ea2ad4be4f6ea081a";
   const submitHandler = e =>{
     e.preventDefault();
-    axios
-    .get(
-      `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${search}&per_page=24&format=json&nojsoncallback=1`
+    fetch(`https://api.edamam.com/search?q=${search}&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}&from=0&to=30&calories=591-722&health=alcohol-free`).then(
+      response => response.json()
+    ).then(
+      data => console.log(data)
     )
-    .then(response => {
-      setData(response.data.photos.photo)
-    })
-    .catch(error => {
-      console.log(
-        "Encountered an error with fetching and parsing data",
-        error
-      );
-  })
   }
   return (
     <div>
       <center>
-        <h2>Gallery Snapshot</h2><br></br>
+        <h4>Food Recipe App</h4>
         <form onSubmit={submitHandler}>
-          <input size="30" type="text" onChange={changeHandler} value={search}/><br /><br />
-          <input type="submit" name="Search" />
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}/> <br/>
+          <input type="submit" className="btn btn-primary" value="Search"/>
         </form>
-        <br />
-        {data.length>=1?<Gallery data={data}/>:<h4>No Image Loaded</h4>}
+        {data.length>=1 ? <Products  data={data}/>:null}
       </center>
     </div>
   )
